@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<!-- PETUNJUK: viewport membuat tampilan pas di HP -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dylan Denezra Sintano – APSI Minggu 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================
+     1. VARIABEL (ubah warna cukup di sini)
+     ========================================================= */
+  :root {
+    --bg:    #FFF8EE;
+    --ink:   #3B2F4A;
+    --sky:   #BFE0FF;
+    --mint:  #BFEBD7;
+    --peach: #FFD3B6;
+    --lemon: #FFF0A8;
+    --lilac: #DCCBFF;
+    --pink:  #FFC4DD;
+    --font-head: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+    --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); color: var(--ink); background: var(--bg); line-height: 1.65; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 20px; }
+  [hidden] { display: none !important; }   /* PETUNJUK: halaman yang tidak aktif disembunyikan */
+  button, a { font: inherit; color: inherit; }
+  :focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+
+  /* =========================================================
+     2. HALAMAN UTAMA: PROFIL + JUDUL BESAR
+     ========================================================= */
+  .hero {
+    position: relative; overflow: hidden;
+    background: var(--lilac); border: 4px solid var(--ink); border-radius: 40px;
+    box-shadow: 10px 10px 0 var(--ink);
+    padding: 36px 32px; display: flex; align-items: center; gap: 28px; margin: 12px 0 48px;
+  }
+  .hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; }
+  .hero::before { width: 220px; height: 220px; background: var(--pink);  right: -60px; top: -70px; }
+  .hero::after  { width: 140px; height: 140px; background: var(--lemon); right: 90px; bottom: -60px; }
+  .avatar {
+    position: relative; z-index: 1; flex: none; width: 112px; height: 112px; border-radius: 50%;
+    background: var(--mint); border: 4px solid var(--ink);
+    display: grid; place-items: center; font: 700 2.5rem var(--font-head);
+    animation: goyang 3s ease-in-out 1s 2;
+  }
+  @keyframes goyang { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-8deg) } 75% { transform: rotate(8deg) } }
+  .hero-text { position: relative; z-index: 1; }
+  .hero h1 { font: 700 clamp(1.9rem, 5.5vw, 3rem)/1.1 var(--font-head); margin-bottom: 12px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge { background: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 4px 16px; font-weight: 700; }
+  .badge small { opacity: .7; margin-right: 6px; font-weight: 600; }
+
+  .intro h2 { font: 700 clamp(1.4rem, 4vw, 2rem)/1.2 var(--font-head); margin-bottom: 6px; }
+  .intro p  { margin-bottom: 24px; }
+
+  /* Daftar judul besar. PETUNJUK: tiap judul adalah <button> agar bisa ditekan lewat mouse, sentuh, dan keyboard */
+  .titles { display: grid; gap: 22px; }
+  .title-btn {
+    width: 100%; text-align: left; cursor: pointer;
+    background: var(--c); border: 4px solid var(--ink); border-radius: 32px;
+    box-shadow: 8px 8px 0 var(--ink);
+    padding: clamp(20px, 4vw, 34px);
+    display: flex; align-items: center; gap: 20px;
+    transition: transform .25s cubic-bezier(.3,1.6,.5,1), box-shadow .25s ease;
+  }
+  .title-btn:hover, .title-btn:focus-visible { transform: translate(-4px,-6px) rotate(-.8deg); box-shadow: 13px 15px 0 var(--ink); }
+  .title-btn:active { transform: translate(4px,4px); box-shadow: 3px 3px 0 var(--ink); }  /* efek "tertekan" saat dipencet */
+  .title-btn .emoji { flex: none; font-size: clamp(2rem, 6vw, 3rem); width: 1.9em; height: 1.9em; display: grid; place-items: center; background: #fff; border: 3px solid var(--ink); border-radius: 22px; }
+  .title-btn .name { font: 700 clamp(1.5rem, 5.5vw, 2.8rem)/1.1 var(--font-head); flex: 1; }
+  .title-btn .go { flex: none; font: 700 1.8rem var(--font-head); transition: transform .25s; }
+  .title-btn:hover .go { transform: translateX(8px); }
+
+  /* =========================================================
+     3. HALAMAN ISI (satu halaman per judul)
+     ========================================================= */
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 8px 0 28px; }
+  .btn {
+    cursor: pointer; background: #fff; border: 3px solid var(--ink); border-radius: 999px;
+    padding: 8px 20px; font-weight: 700; box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn[disabled] { opacity: .4; pointer-events: none; }
+
+  .page-head {
+    background: var(--c); border: 4px solid var(--ink); border-radius: 36px; box-shadow: 8px 8px 0 var(--ink);
+    padding: clamp(28px, 6vw, 56px); margin-bottom: 28px;
+  }
+  .page-head .emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+  .page-head h2 { font: 700 clamp(2.2rem, 8vw, 4.5rem)/1.05 var(--font-head); }   /* judul besar halaman */
+
+  .content {
+    background: #fff; border: 4px solid var(--ink); border-radius: 28px; box-shadow: 6px 6px 0 var(--ink);
+    padding: clamp(22px, 4vw, 36px); font-size: 1.1rem;
+  }
+  .content p { margin-bottom: 14px; max-width: 62ch; }
+  .content p:last-child { margin-bottom: 0; }
+
+  /* Chip untuk daftar tak berurutan */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin-top: 8px; }
+  .chips li { background: var(--c); border: 3px solid var(--ink); border-radius: 999px; padding: 6px 18px; font-weight: 700; }
+  /* Daftar bernomor untuk SDLC (karena memang berurutan) */
+  .steps { list-style: none; counter-reset: n; display: grid; gap: 12px; margin-top: 8px; }
+  .steps li { counter-increment: n; display: flex; align-items: center; gap: 14px; font-weight: 700; }
+  .steps li::before {
+    content: counter(n); flex: none; width: 38px; height: 38px; border-radius: 50%;
+    background: var(--c); border: 3px solid var(--ink); display: grid; place-items: center; font: 600 1rem var(--font-head);
+  }
+
+  .pager { display: flex; justify-content: space-between; gap: 12px; margin: 28px 0 8px; }
+
+  /* Animasi masuk halaman isi: kartu "mekar" dari kecil */
+  .page.enter .page-head { animation: pop .5s cubic-bezier(.3,1.6,.5,1) both; }
+  .page.enter .content   { animation: pop .5s .12s cubic-bezier(.3,1.6,.5,1) both; }
+  @keyframes pop { from { transform: scale(.9); opacity: 0 } to { transform: none; opacity: 1 } }
+
+  /* =========================================================
+     4. EFEK TERPECAH (tirai atas & bawah)
+     PETUNJUK: dua panel menutup layar dari atas dan bawah. Judul dipotong di tengah
+     sehingga terlihat "terbelah", lalu membuka kembali menampilkan halaman baru.
+     ========================================================= */
+  .split { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+  .half {
+    position: absolute; left: 0; right: 0; height: 50.2%;
+    background: var(--cc, var(--lilac)); overflow: hidden;
+    transition: transform .5s cubic-bezier(.77,0,.18,1);
+  }
+  .half.top    { top: 0;    transform: translateY(-101%); border-bottom: 4px solid var(--ink); }
+  .half.bottom { bottom: 0; transform: translateY(101%);  border-top: 4px solid var(--ink); }
+  .split.close .half { transform: none; }   /* menutup */
+  .split.close { pointer-events: all; }
+  .half span {
+    position: absolute; left: 0; right: 0; text-align: center; padding: 0 16px;
+    font: 700 clamp(2rem, 9vw, 5.5rem)/1.05 var(--font-head);
+  }
+  /* Teks diletakkan tepat di garis tengah: bagian atas di panel atas, bagian bawah di panel bawah */
+  .half.top span    { bottom: 0; transform: translateY(50%); }
+  .half.bottom span { top: 0;    transform: translateY(-50%); }
+
+  footer { text-align: center; margin: 48px 0 12px; font-weight: 600; }
+
+  /* =========================================================
+     5. RESPONSIF HP & AKSESIBILITAS
+     ========================================================= */
+  @media (max-width: 600px) {
+    .wrap { padding: 14px; }
+    .hero { flex-direction: column; text-align: center; padding: 30px 18px; box-shadow: 6px 6px 0 var(--ink); }
+    .badges { justify-content: center; }
+    .title-btn .go { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- ================= HALAMAN UTAMA ================= -->
+  <section id="home" class="page">
+    <header class="hero">
+      <div class="avatar" aria-hidden="true">DS</div>
+      <div class="hero-text">
+        <h1>Dylan Denezra Sintano</h1>
+        <div class="badges">
+          <span class="badge"><small>NIM</small>59250012</span>
+          <span class="badge">Institut Bisnis dan Informatika Kwik Kian Gie</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="intro">
+      <h2>Analisis dan Perancangan Sistem Informasi: Minggu ke-1</h2>
+      <p>Pilih satu judul untuk membuka halamannya.</p>
+    </div>
+
+    <!-- PETUNJUK: data-go = id halaman tujuan. data-color = warna tirai saat transisi. -->
+    <nav class="titles" aria-label="Daftar materi">
+      <button class="title-btn" style="--c:var(--sky)"   data-go="konsep"      data-color="var(--sky)">
+        <span class="emoji" aria-hidden="true">💡</span><span class="name">Konsep Dasar</span><span class="go" aria-hidden="true">→</span></button>
+      <button class="title-btn" style="--c:var(--mint)"  data-go="komponen"    data-color="var(--mint)">
+        <span class="emoji" aria-hidden="true">🧩</span><span class="name">Komponen Sistem Informasi</span><span class="go" aria-hidden="true">→</span></button>
+      <button class="title-btn" style="--c:var(--peach)" data-go="stakeholder" data-color="var(--peach)">
+        <span class="emoji" aria-hidden="true">👥</span><span class="name">Stakeholder</span><span class="go" aria-hidden="true">→</span></button>
+      <button class="title-btn" style="--c:var(--lemon)" data-go="sdlc"        data-color="var(--lemon)">
+        <span class="emoji" aria-hidden="true">🔄</span><span class="name">Siklus Pengembangan Sistem (SDLC)</span><span class="go" aria-hidden="true">→</span></button>
+    </nav>
+  </section>
+
+  <!-- ================= HALAMAN ISI =================
+       PETUNJUK: untuk menambah halaman baru, salin satu <section class="page" ...>,
+       lalu tambahkan juga tombolnya di daftar judul di atas dan id-nya di array ORDER pada JavaScript. -->
+
+  <section id="konsep" class="page" style="--c:var(--sky)" data-title="Konsep Dasar" hidden>
+    <div class="topbar"><button class="btn" data-go="home">← Beranda</button></div>
+    <div class="page-head"><span class="emoji" aria-hidden="true">💡</span><h2>Konsep Dasar</h2></div>
+    <div class="content">
+      <p><strong>Sistem</strong> adalah kumpulan dari bagian-bagian yang bekerja bersama-sama untuk mencapai tujuan yang sama.</p>
+      <p><strong>Informasi</strong> adalah data yang telah diolah menjadi bentuk yang berarti.</p>
+    </div>
+    <div class="pager"><button class="btn" disabled>← Sebelumnya</button><button class="btn" data-next>Berikutnya →</button></div>
+  </section>
+
+  <section id="komponen" class="page" style="--c:var(--mint)" data-title="Komponen Sistem Informasi" hidden>
+    <div class="topbar"><button class="btn" data-go="home">← Beranda</button></div>
+    <div class="page-head"><span class="emoji" aria-hidden="true">🧩</span><h2>Komponen Sistem Informasi</h2></div>
+    <div class="content">
+      <p>Sistem informasi terdiri dari lima komponen:</p>
+      <ul class="chips"><li>Hardware</li><li>Software</li><li>Database</li><li>Telekomunikasi</li><li>Manusia</li></ul>
+    </div>
+    <div class="pager"><button class="btn" data-prev>← Sebelumnya</button><button class="btn" data-next>Berikutnya →</button></div>
+  </section>
+
+  <section id="stakeholder" class="page" style="--c:var(--peach)" data-title="Stakeholder" hidden>
+    <div class="topbar"><button class="btn" data-go="home">← Beranda</button></div>
+    <div class="page-head"><span class="emoji" aria-hidden="true">👥</span><h2>Stakeholder</h2></div>
+    <div class="content">
+      <p>Pihak-pihak yang terlibat dalam sistem informasi:</p>
+      <ul class="chips"><li>Manager SI</li><li>System Analyst</li><li>Programmer</li><li>End User</li><li>Supporting End User</li><li>Business Manager</li><li>Teknisi SI lainnya</li></ul>
+    </div>
+    <div class="pager"><button class="btn" data-prev>← Sebelumnya</button><button class="btn" data-next>Berikutnya →</button></div>
+  </section>
+
+  <section id="sdlc" class="page" style="--c:var(--lemon)" data-title="Siklus Pengembangan Sistem (SDLC)" hidden>
+    <div class="topbar"><button class="btn" data-go="home">← Beranda</button></div>
+    <div class="page-head"><span class="emoji" aria-hidden="true">🔄</span><h2>Siklus Pengembangan Sistem (SDLC)</h2></div>
+    <div class="content">
+      <p>Tahapan berurutan dalam mengembangkan sistem:</p>
+      <ol class="steps">
+        <li>Perencanaan</li><li>Analisis</li><li>Perancangan</li><li>Evaluasi dan Seleksi</li>
+        <li>Perancangan secara detail</li><li>Pengembangan Perangkat Lunak dan Implementasi</li><li>Pemeliharaan</li>
+      </ol>
+    </div>
+    <div class="pager"><button class="btn" data-prev>← Sebelumnya</button><button class="btn" disabled>Berikutnya →</button></div>
+  </section>
+
+  <footer>Dibuat oleh Dylan Denezra Sintano · 59250012</footer>
+</div>
+
+<!-- Tirai transisi (atas & bawah). Teks diisi otomatis oleh JavaScript. -->
+<div class="split" id="split" aria-hidden="true">
+  <div class="half top"><span></span></div>
+  <div class="half bottom"><span></span></div>
+</div>
+
+<script>
+/* =========================================================
+   JAVASCRIPT: navigasi antar halaman tanpa memuat ulang
+   ========================================================= */
+const ORDER   = ["konsep", "komponen", "stakeholder", "sdlc"];   // urutan halaman materi
+const pages   = document.querySelectorAll(".page");
+const split   = document.getElementById("split");
+const spans   = split.querySelectorAll("span");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let busy = false;
+
+/* Menampilkan satu halaman dan menyembunyikan yang lain */
+function show(id) {
+  if (!document.getElementById(id)) id = "home";
+  pages.forEach(p => { p.hidden = p.id !== id; p.classList.toggle("enter", p.id === id); });
+  const page = document.getElementById(id);
+  document.title = (id === "home" ? "" : page.dataset.title + " – ") + "Dylan Denezra Sintano – APSI Minggu 1";
+  window.scrollTo(0, 0);
+  const focusTarget = page.querySelector("h2") || page;   // bantu pembaca layar
+  focusTarget.setAttribute("tabindex", "-1"); focusTarget.focus({ preventScroll: true });
+}
+
+/* Pindah halaman dengan efek terpecah */
+function go(id, color) {
+  const current = location.hash.slice(1) || "home";
+  if (busy || id === current) return;
+  const target = document.getElementById(id);
+  const label  = id === "home" ? "Beranda" : target.dataset.title;
+  const c      = color || getComputedStyle(target).getPropertyValue("--c") || "var(--lilac)";
+
+  if (reduced) { location.hash = id === "home" ? "" : id; show(id); return; }
+
+  busy = true;
+  spans.forEach(s => s.textContent = label);
+  split.style.setProperty("--cc", c);
+  split.classList.add("close");                      // 1) tirai menutup, judul terlihat terbelah
+  setTimeout(() => {
+    history.pushState(null, "", id === "home" ? location.pathname : "#" + id);
+    show(id);                                        // 2) ganti halaman saat layar tertutup
+    setTimeout(() => {
+      split.classList.remove("close");               // 3) tirai membuka
+      setTimeout(() => busy = false, 500);
+    }, 250);
+  }, 550);
+}
+
+/* Klik tombol manapun yang punya data-go */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-go], [data-next], [data-prev]");
+  if (!b) return;
+  const now = location.hash.slice(1);
+  if (b.hasAttribute("data-next")) return go(ORDER[ORDER.indexOf(now) + 1], "var(--lilac)");
+  if (b.hasAttribute("data-prev")) return go(ORDER[ORDER.indexOf(now) - 1], "var(--lilac)");
+  go(b.dataset.go, b.dataset.color);
+});
+
+/* Tombol Back/Forward browser dan membuka link langsung (mis. ...index.html#sdlc) */
+window.addEventListener("popstate", () => show(location.hash.slice(1) || "home"));
+show(location.hash.slice(1) || "home");
+</script>
+</body>
+</html>
