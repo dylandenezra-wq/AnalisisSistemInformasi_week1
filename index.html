@@ -400,7 +400,7 @@ show(location.hash.slice(1) || "home");
       }
     } catch (err) {
       pesanEl.style.color = "red";
-      pesanEl.textContent = "❌ Gagal mengirim. Coba lagi ya.";
+      pesanEl.textContent = "❌ Gagal: " + err.message;
     } finally {
       tombolEl.disabled = false;
       tombolEl.textContent = "Kirim Feedback";
