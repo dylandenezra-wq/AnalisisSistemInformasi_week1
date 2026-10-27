@@ -160,9 +160,105 @@
     * { animation: none !important; transition: none !important; }
   }
 </style>
+  <style>
+  /* Layar penuh yang menutupi seluruh halaman */
+  #login-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;            /* di atas semua elemen lain */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    font-family: system-ui, sans-serif;
+  }
+  #login-overlay.hidden { display: none; }
+
+  #login-form {
+    width: 90%;
+    max-width: 340px;
+    padding: 32px 28px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+  }
+  #login-form h2 { margin: 0 0 4px; color: #0f172a; }
+  #login-form p.sub { margin: 0 0 20px; color: #64748b; font-size: 14px; }
+
+  #login-form input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+  #login-form input:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+  #login-form button {
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: #3b82f6;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #login-form button:hover { background: #2563eb; }
+
+  #login-error { margin: 0 0 12px; color: #dc2626; font-size: 14px; }
+</style>
 </head>
 
 <body>
+  <div id="login-overlay">
+  <form id="login-form">
+    <h2>Login</h2>
+    <p class="sub">Masukkan username dan password</p>
+
+    <input id="login-user" type="text" placeholder="Username" autocomplete="username" required>
+    <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+
+    <p id="login-error" hidden>❌ Username atau password salah!</p>
+    <button type="submit">Masuk</button>
+  </form>
+</div>
+
+<script>
+  // ====== PETUNJUK: ganti data login di sini ======
+  const VALID_USER = "dylan";
+  const VALID_PASS = "12345";
+  // ================================================
+
+  const overlay = document.getElementById("login-overlay");
+  const form    = document.getElementById("login-form");
+  const errorEl = document.getElementById("login-error");
+
+  // 1. Kalau sebelumnya sudah login, langsung buka halaman
+  if (sessionStorage.getItem("isLoggedIn") === "true") {
+    overlay.classList.add("hidden");
+  }
+
+  // 2. Saat tombol "Masuk" ditekan
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();  // cegah halaman reload
+
+    const user = document.getElementById("login-user").value.trim().toLowerCase();
+    const pass = document.getElementById("login-pass").value;
+
+    if (user === VALID_USER && pass === VALID_PASS) {
+      sessionStorage.setItem("isLoggedIn", "true");  // ingat status login
+      overlay.classList.add("hidden");               // buka halaman
+      errorEl.hidden = true;
+    } else {
+      errorEl.hidden = false;                        // tampilkan error
+      document.getElementById("login-pass").value = "";
+    }
+  });
+</script>
 <div class="wrap">
 
   <!-- ================= HALAMAN UTAMA ================= -->
@@ -408,5 +504,6 @@ show(location.hash.slice(1) || "home");
   });
 })();
 </script>
+    <button onclick="sessionStorage.removeItem('isLoggedIn'); location.reload();">Logout</button>
 </body>
 </html>
